@@ -27,9 +27,9 @@ const CommunityPage = () => {
   );
 };
 
-//tab-content를 component로 선언
+/* //tab-content를 component로 선언
 function TabContent({ tabs }) {
-  /*     let [fade, setFade] = useState(""); //기본 fade 상태를 선언 */
+  //let [fade, setFade] = useState(""); //기본 fade 상태를 선언 
 
   useEffect(() => {
     setTimeout(() => {
@@ -55,14 +55,43 @@ function TabContent({ tabs }) {
           <CommunityList tab={1} />
         </div>
       )}
+    </div>
+  );
+} */
+
+function TabContent({ tabs }) {
+  let [fade, setFade] = useState(""); //기본 fade 상태를 선언
+
+  useEffect(() => {
+    setTimeout(() => {
+      setFade("end");
+    }, 300);
+
+    //clean up function -> useEffect 실행 전에 먼저 실행하는 구문
+    return () => {
+      setFade("");
+    };
+  }, [tabs]);
+
+  return (
+    <div>
+      {tabs === 0 && (
+        <div className={`tab-content1 ${fade}`}>
+          <CommunityList tab={0} />
+        </div>
+      )}
+      {tabs === 1 && (
+        <div className={`tab-content2 ${fade}`}>
+          <CommunityList tab={1} />
+        </div>
+      )}
       {/*           {tabs === 2 && (
-              <div className="tab-content3">
-                  <CommunityList tab={2} />
-              </div>
-          )} */}
+                <div className={`tab-content3 ${fade}`}>
+                    <CommunityList tab={2} />
+                </div>
+            )} */}
       {/* 필요에 따라 추가적인 탭에 대한 조건을 추가할 수 있습니다. */}
     </div>
   );
 }
-
 export default CommunityPage;
