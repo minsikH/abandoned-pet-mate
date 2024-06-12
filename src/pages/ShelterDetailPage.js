@@ -172,11 +172,11 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { petAction } from "../redux/action/petAction";
 import Kakao from "../component/Kakao";
-import { useNavigate, useParams} from "react-router-dom";
+import { /* useNavigate, */ useParams } from "react-router-dom";
 import ShelterPetContent from "../component/ShelterPetContent";
 
 const ShelterDetailPage = () => {
-/*     const dispatch = useDispatch();
+  /*     const dispatch = useDispatch();
     const { uniqueAllPetsList, allPetsList } = useSelector((state) => state.pet);
 
     const { id } = useParams();
@@ -194,10 +194,7 @@ const ShelterDetailPage = () => {
     // 선택된 보호소와 동일한 주소의 모든 유기동물 찾기
 const petsInSelectedShelter = allPetsList.filter(pet => pet.careAddr === selectedShelter.careAddr); */
 
-
-
-
-/* const dispatch = useDispatch();
+  /* const dispatch = useDispatch();
 const { uniqueAllPetsList, allPetsList } = useSelector((state) => state.pet);
 const [selectedShelter, setSelectedShelter] = useState(null);
 const navigate = useNavigate();
@@ -245,113 +242,114 @@ useEffect(() => {
 if (!selectedShelter) {
     return null;
 } */
-const dispatch = useDispatch();
-const { uniqueAllPetsList, allPetsList } = useSelector((state) => state.pet);
-const [selectedShelter, setSelectedShelter] = useState(null);
-const navigate = useNavigate();
-const { id } = useParams();
+  const dispatch = useDispatch();
+  const { uniqueAllPetsList, allPetsList } = useSelector((state) => state.pet);
+  const [selectedShelter, setSelectedShelter] = useState(null);
+  /* const navigate = useNavigate(); */
+  const { id } = useParams();
 
-useEffect(() => {
+  useEffect(() => {
     dispatch(petAction.getAllShelters());
-}, [dispatch]);
+  }, [dispatch]);
 
-useEffect(() => {
-    const foundShelter = uniqueAllPetsList.find((shelter) => shelter.desertionNo === id);
+  useEffect(() => {
+    const foundShelter = uniqueAllPetsList.find(
+      (shelter) => shelter.desertionNo === id
+    );
     setSelectedShelter(foundShelter);
-}, [uniqueAllPetsList, id]);
+  }, [uniqueAllPetsList, id]);
 
-const petsInSelectedShelter = allPetsList.filter((pet) => pet.careAddr === selectedShelter?.careAddr);
+  const petsInSelectedShelter = allPetsList.filter(
+    (pet) => pet.careAddr === selectedShelter?.careAddr
+  );
 
-useEffect(() => {
-    const storedShelter = JSON.parse(sessionStorage.getItem('selectedShelter'));
+  useEffect(() => {
+    const storedShelter = JSON.parse(sessionStorage.getItem("selectedShelter"));
     if (storedShelter) {
-        setSelectedShelter(storedShelter);
+      setSelectedShelter(storedShelter);
     } else {
-        // 스토리지에 데이터가 없을 경우, 이전 데이터를 삭제합니다.
-        setSelectedShelter(null);
+      // 스토리지에 데이터가 없을 경우, 이전 데이터를 삭제합니다.
+      setSelectedShelter(null);
     }
-}, [id]);
+  }, [id]);
 
-useEffect(() => {
+  useEffect(() => {
     if (selectedShelter) {
-        localStorage.setItem('selectedShelter', JSON.stringify(selectedShelter));
+      localStorage.setItem("selectedShelter", JSON.stringify(selectedShelter));
     }
-}, [selectedShelter]);
+  }, [selectedShelter]);
 
-// 이전 데이터를 삭제하는 함수
-const clearLocalStorage = () => {
-    localStorage.removeItem('selectedShelter');
-};
+  // 이전 데이터를 삭제하는 함수
+  const clearLocalStorage = () => {
+    localStorage.removeItem("selectedShelter");
+  };
 
-// 페이지 이동 시에 이전 데이터를 삭제
-useEffect(() => {
+  // 페이지 이동 시에 이전 데이터를 삭제
+  useEffect(() => {
     const handleNavigate = () => {
-        clearLocalStorage();
+      clearLocalStorage();
     };
 
     return () => {
-        handleNavigate();
+      handleNavigate();
     };
-}, []);
+  }, []);
 
-if (!selectedShelter) {
+  if (!selectedShelter) {
     return null;
-}
+  }
 
-
-
-
-    return (
-        <div className="pet_detail_page shelter_detail_page">
-            <div className="inner">
-                <p className="main_title">보호소</p>
-                <ul className="result_area">
-                    <li>
-                        <div className="result_info">
-                            <p className="info_title">동물 보호 센터</p>
-                            <ul className="info_text cs_info">
-                                <li>
-                                    <dl>
-                                        <dt>보호센터명</dt>
-                                        <dd>{selectedShelter?.careNm}</dd>
-                                    </dl>
-                                </li>
-                                <li>
-                                    <dl>
-                                        <dt>담당자</dt>
-                                        <dd>{selectedShelter?.chargeNm}</dd>
-                                    </dl>
-                                </li>
-                                <li>
-                                    <dl>
-                                        <dt>보호소 전화번호</dt>
-                                        <dd>{selectedShelter?.careTel}</dd>
-                                    </dl>
-                                </li>
-                                <li>
-                                    <dl>
-                                        <dt>담당자 전화번호</dt>
-                                        <dd>{selectedShelter?.officetel}</dd>
-                                    </dl>
-                                </li>
-                                <li>
-                                    <dl>
-                                        <dt>보호소 주소</dt>
-                                        <dd>{selectedShelter?.careAddr}</dd>
-                                    </dl>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li>
-                        <Kakao
-                            careNm={selectedShelter.careNm}
-                            kindCd={selectedShelter.kindCd}
-                            careAddr={selectedShelter.careAddr}
-                        />
-                    </li>
-                    <li>
-{/*                         <ul className="result_area">
+  return (
+    <div className="pet_detail_page shelter_detail_page">
+      <div className="inner">
+        <p className="main_title">보호소</p>
+        <ul className="result_area">
+          <li>
+            <div className="result_info">
+              <p className="info_title">동물 보호 센터</p>
+              <ul className="info_text cs_info">
+                <li>
+                  <dl>
+                    <dt>보호센터명</dt>
+                    <dd>{selectedShelter?.careNm}</dd>
+                  </dl>
+                </li>
+                <li>
+                  <dl>
+                    <dt>담당자</dt>
+                    <dd>{selectedShelter?.chargeNm}</dd>
+                  </dl>
+                </li>
+                <li>
+                  <dl>
+                    <dt>보호소 전화번호</dt>
+                    <dd>{selectedShelter?.careTel}</dd>
+                  </dl>
+                </li>
+                <li>
+                  <dl>
+                    <dt>담당자 전화번호</dt>
+                    <dd>{selectedShelter?.officetel}</dd>
+                  </dl>
+                </li>
+                <li>
+                  <dl>
+                    <dt>보호소 주소</dt>
+                    <dd>{selectedShelter?.careAddr}</dd>
+                  </dl>
+                </li>
+              </ul>
+            </div>
+          </li>
+          <li>
+            <Kakao
+              careNm={selectedShelter.careNm}
+              kindCd={selectedShelter.kindCd}
+              careAddr={selectedShelter.careAddr}
+            />
+          </li>
+          <li>
+            {/*                         <ul className="result_area">
                             {petsInSelectedShelter && petsInSelectedShelter.length > 0 ? (
                                 petsInSelectedShelter.map((pet) => (
                                     <li key={pet.desertionNo}>
@@ -381,12 +379,12 @@ if (!selectedShelter) {
                                 <li>해당 보호소에 속한 동물 정보가 없습니다.</li>
                             )}
                         </ul> */}
-                        <ShelterPetContent petsInSelectedShelter={petsInSelectedShelter}/>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    );
+            <ShelterPetContent petsInSelectedShelter={petsInSelectedShelter} />
+          </li>
+        </ul>
+      </div>
+    </div>
+  );
 };
 
 export default ShelterDetailPage;

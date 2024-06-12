@@ -114,95 +114,81 @@ import KakaoShelter from "../component/KakaoShelter";
 import ShelterContent from "../component/ShelterContent";
 import { petAction } from "../redux/action/petAction";
 import ShelterCard from "../component/ShelterCard";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation /* , useNavigate */ } from "react-router-dom";
 
 const ShelterPage = () => {
-    const dispatch = useDispatch();
-    const { uniqueAllPetsList, loading } = useSelector((state) => state.pet);
-    const navigate = useNavigate(); // 추가된 부분
+  const dispatch = useDispatch();
+  const { uniqueAllPetsList, loading } = useSelector((state) => state.pet);
+  /*     const navigate = useNavigate(); // 추가된 부분 */
 
-    useEffect(() => {
-        dispatch(petAction.getAllShelters());
-    }, [dispatch]);
-    //console.log("Clicked uniqueAllPetsList:", uniqueAllPetsList);
-    // 클릭된 보호소 정보 처리 함수
-    const [selectedShelter, setSelectedShelter] = useState(null);
-    const handleShelterClick = (shelterInfo) => {
-        // 클릭된 보호소 정보를 출력하거나 다른 작업 수행
-        console.log("Clicked shelter:", shelterInfo);
-        setSelectedShelter(shelterInfo); // 클릭된 보호소 정보 설정
+  useEffect(() => {
+    dispatch(petAction.getAllShelters());
+  }, [dispatch]);
+  //console.log("Clicked uniqueAllPetsList:", uniqueAllPetsList);
+  // 클릭된 보호소 정보 처리 함수
+  const [selectedShelter, setSelectedShelter] = useState(null);
+  const handleShelterClick = (shelterInfo) => {
+    // 클릭된 보호소 정보를 출력하거나 다른 작업 수행
+    console.log("Clicked shelter:", shelterInfo);
+    setSelectedShelter(shelterInfo); // 클릭된 보호소 정보 설정
+  };
 
+  const location = useLocation();
+
+  useEffect(() => {
+    const clearLocalStorage = () => {
+      localStorage.removeItem("selectedPet");
+      localStorage.removeItem("selectedShelter");
     };
+    clearLocalStorage(); // 페이지 이동 시 로컬 스토리지 삭제 함수 호출
+  }, [location]);
 
+  console.log("Clicked selectedShelter:", selectedShelter);
+  if (loading) {
+    // 데이터 로딩 중일 때 "로딩 중" 메시지 표시
+    return <div>Loading...</div>;
+  }
 
-    const location = useLocation();
+  return (
+    <div className="shelter_page">
+      <div className="inner">
+        <p className="main_title">보호소</p>
+        <div className="top">
+          <div className="kakao_shelter">
+            <KakaoShelter
+              uniqueAllPetsList={uniqueAllPetsList}
+              onShelterClick={handleShelterClick}
+            />
+          </div>
+          <div className="result">
+            <p className="info_title">선택한 보호소 정보</p>
 
-
-    useEffect(() => {
-        const clearLocalStorage = () => {
-            localStorage.removeItem('selectedPet');
-            localStorage.removeItem('selectedShelter');
-        };
-        clearLocalStorage(); // 페이지 이동 시 로컬 스토리지 삭제 함수 호출
-    }, [location]);
-
-
-
-
-
-
-
-
-
-    console.log("Clicked selectedShelter:", selectedShelter);
-    if (loading) {
-        // 데이터 로딩 중일 때 "로딩 중" 메시지 표시
-        return <div>Loading...</div>;
-    }
-
-
-
-
-
-
-
-    return (
-        <div className="shelter_page">
-            <div className="inner">
-                <p className="main_title">보호소</p>
-                <div className="top">
-                    <div className="kakao_shelter">
-                        <KakaoShelter uniqueAllPetsList={uniqueAllPetsList} onShelterClick={handleShelterClick} />
-                    </div>
-                    <div className="result">
-                        <p className="info_title">선택한 보호소 정보</p>
-                    
-         {/*                    {selectedShelter && (
+            {/*                    {selectedShelter && (
                                 <ShelterCard
                                     item={selectedShelter}
                                     isSelected={true}
                                 />
                             )} */}
-                                                  {selectedShelter ? (
-                            <ShelterCard
-                                item={selectedShelter}
-                                isSelected={true}
-                            />
-                        ) : (
-                            <div className="off_shelter">
-                                <img src={process.env.PUBLIC_URL + "/img/icon_shelter.png"} alt="" />
-                                <span>지도에서 근처 보호소를 선택해 주세요.</span></div> // 초기 메시지
-                        )}
-                    </div>
-                </div>
-
-                <div className="shelter_list">
-                    <ShelterContent uniqueAllPetsList={uniqueAllPetsList} />
-                </div>
-
-            </div>
+            {selectedShelter ? (
+              <ShelterCard item={selectedShelter} isSelected={true} />
+            ) : (
+              <div className="off_shelter">
+                <img
+                  src={process.env.PUBLIC_URL + "/img/icon_shelter.png"}
+                  alt=""
+                />
+                <span>지도에서 근처 보호소를 선택해 주세요.</span>
+              </div> // 초기 메시지
+            )}
+          </div>
         </div>
-    );
+
+        <div className="shelter_list">
+          <ShelterContent uniqueAllPetsList={uniqueAllPetsList} />
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default ShelterPage;
