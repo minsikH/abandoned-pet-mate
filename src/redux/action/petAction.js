@@ -3,37 +3,40 @@ import api from "../api";
 const API_KEY = process.env.REACT_APP_API_KEY;
 
 function getContents(query) {
-    return async (dispatch) => {
-        try {
-            dispatch({ type: "GET_MOVIES_REQUEST" });
+  return async (dispatch) => {
+    try {
+      dispatch({ type: "GET_MOVIES_REQUEST" });
 
-            // 필터된 쿼리를 이용하여 API 요청을 보냅니다.
-/*             const petApi = await api.get(`/abandonmentPublic?bgnde=20211201&endde=20211231&serviceKey=${API_KEY}`, { */
-            const petApi = await api.get(`/abandonmentPublic?&serviceKey=${API_KEY}`, {
-                params: {
-                    /*                     noticeSdt: "20240101",
+      // 필터된 쿼리를 이용하여 API 요청을 보냅니다.
+      /*             const petApi = await api.get(`/abandonmentPublic?bgnde=20211201&endde=20211231&serviceKey=${API_KEY}`, { */
+      const petApi = await api.get(
+        `/abandonmentPublic?&serviceKey=${API_KEY}`,
+        {
+          params: {
+            /*                     noticeSdt: "20240101",
                     noticeEdt: "20240514", */
-                    /*                     upkind: query.SPECIES_NM, */
-                    upkind: query.UPKIND_NM,
-                    kind: query.KIND_NM,
-                    state: query.STATE_NM,
-                    upr_cd: query.LOCATION_NM,
-                    sexCd: query.GENDER_NM,
-                    neuter_yn: query.NEUTER_NM,
-                    _type: "json",
-                },
-                serviceKey: API_KEY,
-            });
-            //console.log("petApi response:", petApi.data); // 응답 확인
+            /*                     upkind: query.SPECIES_NM, */
+            upkind: query.UPKIND_NM,
+            kind: query.KIND_NM,
+            state: query.STATE_NM,
+            upr_cd: query.LOCATION_NM,
+            sexCd: query.GENDER_NM,
+            neuter_yn: query.NEUTER_NM,
+            _type: "json",
+          },
+          serviceKey: API_KEY,
+        }
+      );
+      //console.log("petApi response:", petApi.data); // 응답 확인
 
-            // petApi의 응답 데이터에서 care_reg_no를 포함한 정보를 추출합니다.
-            /*             const petList = petApi.data.response.body.items.item;
+      // petApi의 응답 데이터에서 care_reg_no를 포함한 정보를 추출합니다.
+      /*             const petList = petApi.data.response.body.items.item;
             petList.forEach((pet) => {
                 console.log(`Care Reg No: ${pet.careRegNo}, Care Name: ${pet.careNm}`);
             }); */
 
-            /* aaaaaaaaaaaaaaaaaaaaaaa */
-            /*             const uprOrgGroups = {
+      /* aaaaaaaaaaaaaaaaaaaaaaa */
+      /*             const uprOrgGroups = {
                 6110000: [
                     3220000, 3240000, 3080000, 3150000, 3200000, 3040000, 3160000, 3170000, 3100000, 3090000, 3050000,
                     3190000, 3130000, 3120000, 6119998, 3210000, 3030000, 3070000, 3230000, 3140000, 3180000, 3020000,
@@ -94,71 +97,78 @@ function getContents(query) {
                 console.log(petShelterApis);
             })(); */
 
-            /* aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa */
+      /* aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa */
 
-            const petSidoApi = await api.get(`/sido?serviceKey=${API_KEY}`, {
-                params: {
-                    serviceKey: API_KEY,
-                },
-            });
+      const petSidoApi = await api.get(`/sido?serviceKey=${API_KEY}`, {
+        params: {
+          serviceKey: API_KEY,
+        },
+      });
 
-            const petKindApi = await api.get(`/kind?up_kind_cd=417000&serviceKey=${API_KEY}`, {
-                params: {
-                    serviceKey: API_KEY,
-                },
-            });
-
-            dispatch({
-                type: "GET_MOVIE_SUCCESS",
-                payload: {
-                    petList: petApi.data,
-                    petSidoList: petSidoApi.data,
-                    petKindList: petKindApi.data,
-                    /* petShelterList: petShelterApis, */
-                    /* petShelterList: petShelterApi.data, */
-                },
-            });
-        } catch (error) {
-            // 에러 핸들링하는 곳
-            dispatch({ type: "GET_MOVIES_FAILURE" });
+      const petKindApi = await api.get(
+        `/kind?up_kind_cd=417000&serviceKey=${API_KEY}`,
+        {
+          params: {
+            serviceKey: API_KEY,
+          },
         }
-    };
+      );
+
+      dispatch({
+        type: "GET_MOVIE_SUCCESS",
+        payload: {
+          petList: petApi.data,
+          petSidoList: petSidoApi.data,
+          petKindList: petKindApi.data,
+          /* petShelterList: petShelterApis, */
+          /* petShelterList: petShelterApi.data, */
+        },
+      });
+    } catch (error) {
+      // 에러 핸들링하는 곳
+      dispatch({ type: "GET_MOVIES_FAILURE" });
+    }
+  };
 }
 export const getAllShelters = () => {
-    return async (dispatch) => {
-        try {
-            dispatch({ type: "GET_ALL_SHELTERS_REQUEST" });
+  return async (dispatch) => {
+    try {
+      dispatch({ type: "GET_ALL_SHELTERS_REQUEST" });
 
-            const response = await api.get(`/abandonmentPublic?&serviceKey=${API_KEY}`, {
-                params: {
-/*                     upkind: "",
+      const response = await api.get(
+        `/abandonmentPublic?&serviceKey=${API_KEY}`,
+        {
+          params: {
+            /*                     upkind: "",
                     state: "", */
-                    _type: "json",
-                },
-                serviceKey: API_KEY,
-            });
-
-            const allPetsList = response.data.response.body.items.item;
-
-            console.log("allPetsList", allPetsList);
-
-            const uniqueAllPetsList = allPetsList.filter(
-                (pet, index, self) => index === self.findIndex((t) => t.careAddr === pet.careAddr),
-            );
-            console.log("uniqueAllPetsList", uniqueAllPetsList);
-
-            dispatch({
-                type: "GET_ALL_SHELTERS_SUCCESS",
-/*                 payload: uniqueAllPetsList, */
-                                payload: {
-                    uniqueAllPetsList: uniqueAllPetsList, // 유일한 보호소 목록
-                    allPetsList: allPetsList, // 모든 애완동물 목록
-                },
-            });
-        } catch (error) {
-            dispatch({ type: "GET_ALL_SHELTERS_FAILURE", payload: error });
+            _type: "json",
+          },
+          serviceKey: API_KEY,
         }
-    };
+      );
+
+      const allPetsList = response.data.response.body.items.item;
+
+      console.log("allPetsList", allPetsList);
+
+      const uniqueAllPetsList = allPetsList.filter(
+        (pet, index, self) =>
+          index === self.findIndex((t) => t.careAddr === pet.careAddr)
+      );
+      console.log("uniqueAllPetsList", uniqueAllPetsList);
+
+      dispatch({
+        type: "GET_ALL_SHELTERS_SUCCESS",
+        /*                 payload: uniqueAllPetsList, */
+        payload: {
+          uniqueAllPetsList: uniqueAllPetsList, // 유일한 보호소 목록
+          allPetsList: allPetsList, // 모든 애완동물 목록
+        },
+      });
+    } catch (error) {
+      dispatch({ type: "GET_ALL_SHELTERS_FAILURE", payload: error });
+    }
+  };
 };
 
 /* function getPetDetail(id) {
@@ -184,61 +194,67 @@ export const getAllShelters = () => {
     };
 } */
 function getPetDetail(id) {
-    return async (dispatch) => {
-        try {
-            dispatch({ type: "GET_MOVIE_DETAIL_REQUEST" });
+  return async (dispatch) => {
+    try {
+      dispatch({ type: "GET_MOVIE_DETAIL_REQUEST" });
 
-            // '/pet/${id}' 대신에 올바른 API 엔드포인트를 사용합니다.
-/*             const getPetApi = await api.get(`/pet/${id}`, { */
-            const getPetApi = await api.get(`/abandonmentPublic?desertionNo=${id}&serviceKey=${API_KEY}`, {
-                params: {
-                    _type: "json",
-                },
-                serviceKey: API_KEY,
-            });
-
-            //console.log("action 페이지 movieDetail:", getPetApi.data); // 데이터 확인
-
-            dispatch({
-                type: "GET_MOVIE_DETAIL_SUCCESS",
-                payload: {
-                    petDetail: getPetApi.data,
-                },
-            });
-        } catch (error) {
-            dispatch({ type: "GET_MOVIE_DETAIL_FAIL", payload: error.error });
+      // '/pet/${id}' 대신에 올바른 API 엔드포인트를 사용합니다.
+      /*             const getPetApi = await api.get(`/pet/${id}`, { */
+      const getPetApi = await api.get(
+        `/abandonmentPublic?desertionNo=${id}&serviceKey=${API_KEY}`,
+        {
+          params: {
+            _type: "json",
+          },
+          serviceKey: API_KEY,
         }
-    };
+      );
+
+      //console.log("action 페이지 movieDetail:", getPetApi.data); // 데이터 확인
+
+      dispatch({
+        type: "GET_MOVIE_DETAIL_SUCCESS",
+        payload: {
+          petDetail: getPetApi.data,
+        },
+      });
+    } catch (error) {
+      dispatch({ type: "GET_MOVIE_DETAIL_FAIL", payload: error.error });
+    }
+  };
 }
 
 function getShelterDetail(shelterId) {
-    return async (dispatch) => {
-        try {
-            dispatch({ type: "GET_SHELTER_DETAIL_REQUEST" });
-            const response = await api.get(`/abandonmentPublic?desertionNo=${shelterId}&serviceKey=${API_KEY}`, {
-                params: {
-                    _type: "json",
-                },
-                serviceKey: API_KEY,
-            });
-
-            console.log("action 페이지 shelterDetail:", response.data); // 데이터 확인
-
-            dispatch({
-                type: "GET_SHELTER_DETAIL_SUCCESS",
-                payload: {
-                    shelterDetail: response.data,
-                },
-            });
-        } catch (error) {
-            dispatch({ type: "GET_SHELTER_DETAIL_FAILURE", payload: error });
+  return async (dispatch) => {
+    try {
+      dispatch({ type: "GET_SHELTER_DETAIL_REQUEST" });
+      const response = await api.get(
+        `/abandonmentPublic?desertionNo=${shelterId}&serviceKey=${API_KEY}`,
+        {
+          params: {
+            _type: "json",
+          },
+          serviceKey: API_KEY,
         }
-    };
+      );
+
+      console.log("action 페이지 shelterDetail:", response.data); // 데이터 확인
+
+      dispatch({
+        type: "GET_SHELTER_DETAIL_SUCCESS",
+        payload: {
+          shelterDetail: response.data,
+        },
+      });
+    } catch (error) {
+      dispatch({ type: "GET_SHELTER_DETAIL_FAILURE", payload: error });
+    }
+  };
 }
 
 export const petAction = {
-    getContents,
-    getPetDetail,
-    getAllShelters,
-    getShelterDetail,
+  getContents,
+  getPetDetail,
+  getAllShelters,
+  getShelterDetail,
 };
