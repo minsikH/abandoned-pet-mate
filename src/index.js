@@ -8,13 +8,11 @@ import { Provider } from "react-redux";
 import store from "./redux/store";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-    <Provider store={store}>
-        <BrowserRouter>
-            <App />
-        </BrowserRouter>
-    </Provider>,
+  <Provider store={store}>
+    <BrowserRouter basename="{process.env.PUBLIC_URL}">
+      <App />
+    </BrowserRouter>
+  </Provider>
 );
 
 reportWebVitals();
-
-
