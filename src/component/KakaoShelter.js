@@ -66,7 +66,7 @@ const KakaoShelter = ({ petList }) => {
 export default KakaoShelter;
  */
 
-/* import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
 const { kakao } = window;
 
@@ -86,7 +86,7 @@ const KakaoShelter = ({ uniqueAllPetsList, onShelterClick }) => {
 
     // uniqueAllPetsList가 배열이 아니라 객체일 경우 처리
     //const petItems = uniqueAllPetsList?.response?.body?.items?.item;
-    
+
     if (Array.isArray(uniqueAllPetsList)) {
       uniqueAllPetsList.forEach((pet) => {
         const { careNm, kindCd, careAddr, desertionNo, careTel } = pet;
@@ -156,8 +156,8 @@ const KakaoShelter = ({ uniqueAllPetsList, onShelterClick }) => {
   );
 };
 
-export default KakaoShelter; */
-import React, { useEffect, useRef } from "react";
+export default KakaoShelter;
+/* import React, { useEffect, useRef } from "react";
 
 const { kakao } = window;
 
@@ -242,3 +242,4 @@ const KakaoShelter = ({ uniqueAllPetsList, onShelterClick }) => {
 };
 
 export default KakaoShelter;
+ */
