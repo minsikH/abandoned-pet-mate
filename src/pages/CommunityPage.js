@@ -1,9 +1,27 @@
 import React, { useEffect, useState } from "react";
 import CommunityList from "../component/CommunityList";
+import CommunityQna from "../component/CommunityQna";
 import { Nav } from "react-bootstrap";
+import { useAuthContext } from "../hooks/useAuthContext";
+import { useCollection } from "../hooks/useCollection";
 
 const CommunityPage = () => {
-  let [tabs, setTabs] = useState(0); //tab 메뉴의 기본상태가 0
+  const { user } = useAuthContext();
+  const { documents, error } = useCollection("review"); // "review" 컬렉션에서 문서 가져오기
+
+  const [tabs, setTabs] = useState(0);
+  const [fade, setFade] = useState("");
+
+  useEffect(() => {
+    // 탭 변경 시 fade 효과 설정
+    setTimeout(() => {
+      setFade("end");
+    }, 300);
+
+    return () => {
+      setFade("");
+    };
+  }, [tabs]);
 
   return (
     <div className="community_page">
@@ -21,77 +39,46 @@ const CommunityPage = () => {
             </Nav.Link>
           </Nav.Item>
         </Nav>
-        <TabContent tabs={tabs} />
+        <TabContent
+          tabs={tabs}
+          documents={documents}
+          error={error}
+          fade={fade}
+          setFade={setFade}
+        />
       </div>
     </div>
   );
 };
 
-/* //tab-content를 component로 선언
-function TabContent({ tabs }) {
-  //let [fade, setFade] = useState(""); //기본 fade 상태를 선언 
-
-  useEffect(() => {
-    setTimeout(() => {
-      setFade("end");
-    }, 300);
-    //setFade('end')
-
-    //clean up function -> useEffect 실행 전에 먼저 실행하는 구문
-    return () => {
-      setFade("");
-    };
-  }, [tabs]);
-
-  return (
-    <div>
-      {tabs === 0 && (
-        <div className="tab-content1">
-          <CommunityList tab={0} />
-        </div>
-      )}
-      {tabs === 1 && (
-        <div className="tab-content2">
-          <CommunityList tab={1} />
-        </div>
-      )}
-    </div>
-  );
-} */
-
-function TabContent({ tabs }) {
-  let [fade, setFade] = useState(""); //기본 fade 상태를 선언
+function TabContent({ tabs, documents, error, fade, setFade }) {
+  const { user } = useAuthContext();
 
   useEffect(() => {
     setTimeout(() => {
       setFade("end");
     }, 300);
 
-    //clean up function -> useEffect 실행 전에 먼저 실행하는 구문
     return () => {
       setFade("");
     };
-  }, [tabs]);
+  }, [tabs, setFade]);
 
   return (
     <div>
+      {error && <strong>{error}</strong>}
       {tabs === 0 && (
         <div className={`tab-content1 ${fade}`}>
-          <CommunityList tab={0} />
+          <CommunityList tab={0} documents={documents} />
         </div>
       )}
       {tabs === 1 && (
         <div className={`tab-content2 ${fade}`}>
-          <CommunityList tab={1} />
+          <CommunityQna tab={1} />
         </div>
       )}
-      {/*           {tabs === 2 && (
-                <div className={`tab-content3 ${fade}`}>
-                    <CommunityList tab={2} />
-                </div>
-            )} */}
-      {/* 필요에 따라 추가적인 탭에 대한 조건을 추가할 수 있습니다. */}
     </div>
   );
 }
+
 export default CommunityPage;

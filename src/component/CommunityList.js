@@ -1,138 +1,83 @@
-import React, { Component } from "react";
-import Axios from "axios";
+import React from "react";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../hooks/useAuthContext";
 
-const Board = ({ id, title, registerId, registerDate }) => {
-    return (
-        <tr>
-            <td>{id}</td>
-            <td>{title}</td>
-            <td>{registerId}</td>
-            <td>{registerDate}</td>
-        </tr>
-    );
+const CommunityList = ({ tab, documents }) => {
+  const { user } = useAuthContext();
+  const navigate = useNavigate();
+
+  const handleWriteClick = () => {
+    if (!user) {
+      alert("로그인이 필요합니다.");
+      navigate("/login");
+    } else {
+      navigate("/write");
+    }
+  };
+
+  const formatDate = (timestamp) => {
+    if (!timestamp || !timestamp.toDate) {
+      return "날짜 정보 없음";
+    }
+
+    // timestamp를 JavaScript Date 객체로 변환
+    const date = timestamp.toDate();
+
+    const options = {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false, // AM/PM 표기 여부
+    };
+
+    // 날짜를 문자열로 변환하여 반환
+    return date.toLocaleDateString("ko-KR", options);
+  };
+
+  const handleDetailClick = (id) => {
+    navigate(`/community/${id}`);
+  };
+
+  return (
+    <div className="community_list">
+      <p className={tab === 0 ? "tab-content1" : "tab-content2"}>
+        {tab === 0 ? "자유게시판" : "자주묻는질문"}
+      </p>
+
+      <div>
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>번호</th>
+              <th>제목</th>
+              <th>작성자</th>
+              <th>작성일</th>
+            </tr>
+          </thead>
+          <tbody>
+            {documents &&
+              documents.map((doc, index) => (
+                <tr key={doc.id} onClick={() => handleDetailClick(doc.id)}>
+                  <td>{documents.length - index}</td>
+                  <td>{doc.title}</td>
+                  <td>{doc.displayName}</td>
+                  <td>{formatDate(doc.date)}</td>
+                </tr>
+              ))}
+          </tbody>
+        </Table>
+        {tab === 0 && (
+          <div className="btn_area">
+            <Button onClick={handleWriteClick}>글쓰기</Button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 };
-
-class CommunityList extends Component {
-    state = {
-        boardList: [],
-    };
-
-    getList = () => {
-        Axios.get("http://localhost:8000/list")
-            .then((res) => {
-                const { data } = res;
-                this.setState({
-                    boardList: data,
-                });
-            })
-            .catch((e) => {
-                console.error(e);
-            });
-    };
-
-    componentDidMount() {
-        this.getList();
-    }
-
-    render() {
-        const { boardList } = this.state;
-
-
-
-
-        function handleTabClick(tabIndex) {
-            const tabs = document.querySelectorAll('.tabs p');
-            const tabContents = document.querySelectorAll('.tab-contents > div');
-        
-            tabs.forEach(tab => tab.classList.remove('active'));
-            tabContents.forEach(content => content.classList.remove('active'));
-        
-            tabs[tabIndex].classList.add('active');
-            tabContents[tabIndex].classList.add('active');
-        }
-        
-
-        const { tab } = this.props; // 탭 상태를 props로 받아옴
-
-
-
-        return (
-            <div className="community_list">
-               <p className={tab === 0 ? "tab-content1" : "tab-content2"}>
-                    {tab === 0 ? "자유게시판" : "자주묻는질문"}
-                </p>
-
-                <div>
-                    <Table striped bordered hover>
-                        <thead>
-                            <tr>
-                                <th>번호</th>
-                                <th>제목</th>
-                                <th>작성자</th>
-                                <th>작성일</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>7</td>
-                                <td>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Expedita facere maiores ea aspernatur excepturi quae modi? Accusamus corporis voluptate voluptatibus. Delectus animi incidunt iusto perferendis officiis nemo, harum quisquam ut?</td>
-                                <td>관리자</td>
-                                <td>2024.05.05</td>
-                            </tr>
-                            <tr>
-                                <td>6</td>
-                                <td>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Expedita facere maiores ea aspernatur excepturi quae modi? Accusamus corporis voluptate voluptatibus. Delectus animi incidunt iusto perferendis officiis nemo, harum quisquam ut?</td>
-                                <td>관리자</td>
-                                <td>2024.05.05</td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Expedita facere maiores ea aspernatur excepturi quae modi? Accusamus corporis voluptate voluptatibus. Delectus animi incidunt iusto perferendis officiis nemo, harum quisquam ut?</td>
-                                <td>관리자</td>
-                                <td>2024.05.05</td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Expedita facere maiores ea aspernatur excepturi quae modi? Accusamus corporis voluptate voluptatibus. Delectus animi incidunt iusto perferendis officiis nemo, harum quisquam ut?</td>
-                                <td>관리자</td>
-                                <td>2024.05.05</td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Expedita facere maiores ea aspernatur excepturi quae modi? Accusamus corporis voluptate voluptatibus. Delectus animi incidunt iusto perferendis officiis nemo, harum quisquam ut?</td>
-                                <td>관리자</td>
-                                <td>2024.05.05</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Expedita facere maiores ea aspernatur excepturi quae modi? Accusamus corporis voluptate voluptatibus. Delectus animi incidunt iusto perferendis officiis nemo, harum quisquam ut?</td>
-                                <td>관리자</td>
-                                <td>2024.05.05</td>
-                            </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Expedita facere maiores ea aspernatur excepturi quae modi? Accusamus corporis voluptate voluptatibus. Delectus animi incidunt iusto perferendis officiis nemo, harum quisquam ut?</td>
-                                <td>관리자</td>
-                                <td>2024.05.05</td>
-                            </tr>
-
-                        </tbody>
-                    </Table>
-                    {tab === 0 && ( // 자유게시판 탭인 경우에만 버튼을 보여줍니다.
-                        <div className="btn_area">
-                            <Link to="/write">
-                                <Button variant="info">글쓰기</Button>
-                            </Link>
-                        </div>
-                    )}
-
-                </div>
-            </div>
-        );
-    }
-}
 
 export default CommunityList;
